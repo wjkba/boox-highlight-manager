@@ -25,15 +25,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 };
 
 const baseClasses =
-  "inline-flex min-h-11 items-center justify-center border px-3 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900 dark:focus-visible:outline-neutral-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
-
-/** Shared styles: outlined button that inverts to a solid fill on hover. */
-export const outlineInverseClasses =
-  "border border-black can-hover:hover:bg-neutral-800 can-hover:hover:text-white dark:border-white can-hover:dark:hover:bg-white can-hover:dark:hover:text-black";
-
-/** Shared styles: solid-fill button that inverts to outlined on hover. */
-export const filledInverseClasses =
-  "bg-neutral-800 text-white can-hover:hover:bg-white can-hover:hover:text-black border-2";
+  "inline-flex min-h-11 items-center justify-center border px-4 py-2 text-base font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900 dark:focus-visible:outline-neutral-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {

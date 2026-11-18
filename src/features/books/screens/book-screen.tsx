@@ -2,7 +2,9 @@ import { useBook, useBookHighlights } from "../hooks";
 import { ScrollRestoration, useParams } from "react-router-dom";
 import type { ElementType } from "react";
 import { useMemo, useState } from "react";
-import { outlineInverseClasses } from "@/components/ui/button";
+import Button from "@/components/ui/button";
+import Page from "@/components/ui/page";
+import EmptyState from "@/components/ui/empty-state";
 
 export default function BookPage({
   HighlightsListComponent,
@@ -68,12 +70,15 @@ export default function BookPage({
 
   if (book && displayedHighlights) {
     return (
-      <>
-        <h1 className="text-xl mb-2">{book.bookTitle}</h1>
-        <div className="mb-4">
+      <Page
+        title={book.bookTitle}
+        description={book.bookAuthor}
+        back={{ to: "/books", label: "Books" }}
+      >
+        <div className="mb-2">
           <SearchBarComponent setSearchValue={setSearchValue} />
         </div>
-        <div className="mb-2">
+        <div className="mb-4">
           <SortOptionsComponent
             sortOption={sortOption}
             setSortOption={setSortOption}
@@ -82,26 +87,18 @@ export default function BookPage({
           />
         </div>
         <HighlightsListComponent highlights={filteredHighlights} />
-        <div className="flex justify-center mb-12">
-          <button
-            type="button"
-            onClick={handleLoadMore}
-            className={`${
-              limit > displayedHighlights.length ? "hidden " : " "
-            } mt-6 lg:max-w-[60%] w-full p-3 ${outlineInverseClasses}`}
-          >
-            Load more
-          </button>
-        </div>
+        {limit <= displayedHighlights.length && (
+          <Button text="Load more" onClick={handleLoadMore} className="mt-6 w-full" />
+        )}
         <ScrollRestoration />
-      </>
+      </Page>
     );
   }
 
   return (
-    <>
-      <h1 className="text-xl mb-2">Book not found</h1>
+    <Page back={{ to: "/books", label: "Books" }}>
+      {book === null && <EmptyState title="Book not found">It may have been deleted.</EmptyState>}
       <ScrollRestoration />
-    </>
+    </Page>
   );
 }

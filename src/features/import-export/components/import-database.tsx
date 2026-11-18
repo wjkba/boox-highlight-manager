@@ -1,6 +1,14 @@
 import { replaceDatabaseFromJson } from "@/lib/storage/export-db";
 import React, { useState } from "react";
 import Button from "@/components/ui/button";
+import {
+  activeCardClasses,
+  errorTextClasses,
+  labelClasses,
+  metaTextClasses,
+  sectionTitleClasses,
+  successTextClasses,
+} from "@/components/ui/styles";
 
 export default function ImportDatabase() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -40,27 +48,30 @@ export default function ImportDatabase() {
   }
 
   return (
-    <form onSubmit={handleUpload} className="grid gap-2 mb-2">
-      <h1 className="text-xl">Import highlights database</h1>
-      <p className="mb-2">
-        This replaces all local books, highlights, and lists. Export a backup first
-        if you may need to recover the current data.
+    <form onSubmit={handleUpload} className="grid gap-4">
+      <div>
+        <h2 className={sectionTitleClasses}>Restore a backup</h2>
+        <p className={metaTextClasses}>
+          This replaces all local books, highlights, and lists. Export a backup first
+          if you may need to recover the current data.
+        </p>
+      </div>
+      <p className={`${activeCardClasses} border-2 p-3`}>
+        <strong>Warning:</strong> importing replaces the current database and cannot be undone here.
       </p>
-      <p className="border border-amber-600 p-2 mb-2" role="alert">
-        Warning: importing replaces the current database and cannot be undone here.
-      </p>
-      <label htmlFor="database-file">Highlights database file:</label>
-      <input
-        id="database-file"
-        className="w-full"
-        onChange={handleChange}
-        type="file"
-      />
-
-      {errorMessage && <p className="text-red-500 text mb-2">{errorMessage}</p>}
-      {successMessage && <output className="text-green-600 mb-2">{successMessage}</output>}
-      {isBusy && <output className="block">Validating and replacing database…</output>}
-      <Button text={isBusy ? "Importing…" : "Replace database"} type="submit" disabled={isBusy} className="p-2 w-full" />
+      <div>
+        <label htmlFor="database-file" className={labelClasses}>Backup file (.json)</label>
+        <input
+          id="database-file"
+          className="w-full"
+          onChange={handleChange}
+          type="file"
+        />
+      </div>
+      {errorMessage && <p className={errorTextClasses} role="alert">{errorMessage}</p>}
+      {successMessage && <output className={successTextClasses}>{successMessage}</output>}
+      {isBusy && <output className={`block ${metaTextClasses}`}>Validating and replacing database…</output>}
+      <Button text={isBusy ? "Importing…" : "Replace database"} type="submit" disabled={isBusy} className="w-full" />
     </form>
   );
 }

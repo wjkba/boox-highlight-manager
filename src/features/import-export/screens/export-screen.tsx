@@ -4,6 +4,16 @@ import { useRef, useState } from "react";
 import { saveAs } from "file-saver";
 import { exportDbToString } from "@/lib/storage/export-db";
 import Button from "@/components/ui/button";
+import Page from "@/components/ui/page";
+import {
+  errorTextClasses,
+  fieldClasses,
+  labelClasses,
+  metaTextClasses,
+  sectionDividerClasses,
+  sectionTitleClasses,
+  successTextClasses,
+} from "@/components/ui/styles";
 
 export default function ExportPage() {
   const books = useExportBooks();
@@ -57,15 +67,28 @@ export default function ExportPage() {
   }
 
   return (
-      <>
-        {message && <output className="block text-green-600 mb-4">{message}</output>}
-        {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
-        {books && books.length > 0 ? <form className="grid gap-2 lg:max-w-[450px] mb-8">
-          <h1 className="text-xl">Export to Markdown</h1>
-
+      <Page
+        title="Export"
+        description="Download your highlights. Everything stays on this device until you do."
+        width="narrow"
+      >
+        <div aria-live="polite" className="empty:hidden mb-6">
+          {message && <output className={`block ${successTextClasses}`}>{message}</output>}
+          {errorMessage && <p className={errorTextClasses}>{errorMessage}</p>}
+          {busy && <output className={`block ${metaTextClasses}`}>Preparing {busy} export…</output>}
+        </div>
+        <div className="grid gap-10">
+        <form className="grid gap-4">
+          <div>
+            <h2 className={sectionTitleClasses}>Book as Markdown</h2>
+            <p className={metaTextClasses}>One book’s highlights as a .md file, for notes apps.</p>
+          </div>
+          {books && books.length > 0 ? <>
+          <div>
+          <label htmlFor="book-select" className={labelClasses}>Book</label>
           <select
             ref={selectRef}
-            className="p-2 w-full dark:bg-neutral-900"
+            className={fieldClasses}
             name="books"
             id="book-select"
           >
@@ -76,31 +99,33 @@ export default function ExportPage() {
             ))}
           </select>
 
+          </div>
           <Button
-            text="Export"
-            type="button"
+            text={busy === "markdown" ? "Exporting…" : "Export Markdown"}
             onClick={handleExport}
             disabled={busy !== null}
             aria-busy={busy === "markdown"}
-            className="p-2 w-full"
+            className="w-full"
           />
-        </form> : <p className="mb-8">Nothing to export as Markdown.</p>}
-        <form className="grid gap-2 lg:max-w-[450px] mb-8">
-          <h1 className="text-xl">Export highlights database</h1>
-          <p className="mb-2">
-            Your highlights data is stored locally in IndexedDB database. You
-            can export your highlights at any time by clicking the button below.
-          </p>
+          </> : <p>No books to export yet.</p>}
+        </form>
+        <form className={`${sectionDividerClasses} grid gap-4`}>
+          <div>
+            <h2 className={sectionTitleClasses}>Full backup</h2>
+            <p className={metaTextClasses}>
+              All books, highlights and lists as one .json file. Restore it
+              from Import on any device.
+            </p>
+          </div>
           <Button
-            text={busy === "database" ? "Exporting…" : "Export"}
-            type="button"
+            text={busy === "database" ? "Exporting…" : "Export backup"}
             onClick={handleExportDatabase}
             disabled={busy !== null}
             aria-busy={busy === "database"}
-            className="p-2 w-full"
+            className="w-full"
           />
         </form>
-        {busy && <output className="block">Preparing {busy} export…</output>}
-      </>
+        </div>
+      </Page>
     );
 }

@@ -1,3 +1,4 @@
+import { iconButtonClasses, menuClasses, menuItemClasses } from "@/components/ui/styles";
 import {
   deleteHighlight,
   getAllLists,
@@ -14,6 +15,7 @@ import { List } from "@/lib/db/types";
 import { useState } from "react";
 import {
   BiDotsVerticalRounded,
+  BiPlus,
   BiEditAlt,
   BiSolidTrash,
   BiBookOpen,
@@ -204,19 +206,19 @@ export default function HighlightCardOptions({
         type="button"
         aria-label={`${isActive ? "Close" : "Open"} highlight options`}
         aria-expanded={isActive}
-        className="grid place-items-center"
+        className={iconButtonClasses}
         onClick={handleOpen}
       >
-        <BiDotsVerticalRounded size={24} />
+        <BiDotsVerticalRounded size={24} aria-hidden="true" />
       </button>
-      <ul className="bg-white dark:bg-neutral-900 dark:text-white pb-4 border border-black text-black p-2 absolute right-0 top-full z-10 min-w-[9rem] max-w-[calc(100vw-2rem)] w-max">
+      <ul className={menuClasses}>
         {!isShowingLists &&
           cardOptions.map((option) => (
-            <li key={option.text} className="border-b">
+            <li key={option.text}>
               <button
                 type="button"
                 onClick={option.action}
-                className="flex min-h-11 w-full items-center gap-2 p-1 text-left text-sm can-hover:hover:bg-neutral-600 can-hover:hover:text-white"
+                className={menuItemClasses}
               >
                 {option.icon}
                 {option.text}
@@ -226,24 +228,24 @@ export default function HighlightCardOptions({
         {isShowingLists && (
           <>
             {lists?.map((list) => (
-              <li key={list.id} className="border-b">
+              <li key={list.id}>
                 <button
                   type="button"
                   onClick={() => addQuoteToList(list.id)}
-                  className="flex min-h-11 w-full items-center gap-2 p-1 text-left can-hover:hover:bg-neutral-600 can-hover:hover:text-white"
+                  className={menuItemClasses}
                 >
-                  <p>{list.name}</p>
+                  {list.name}
                 </button>
               </li>
             ))}
-            <li className="border-b">
+            <li>
               <button
                 type="button"
                 onClick={() => navigate("/lists")}
-                className="flex min-h-11 w-full items-center gap-2 p-1 text-left can-hover:hover:bg-neutral-600 can-hover:hover:text-white"
+                className={menuItemClasses}
               >
-                <p>+</p>
-                <p>Add new list</p>
+                <BiPlus size={20} aria-hidden="true" />
+                New list…
               </button>
             </li>
           </>

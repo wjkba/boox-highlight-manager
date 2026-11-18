@@ -5,6 +5,17 @@ import { BiSolidStar } from "react-icons/bi";
 import { useState } from "react";
 import ListOptions from "../components/list-options";
 import Button from "@/components/ui/button";
+import Page from "@/components/ui/page";
+import {
+  activeCardClasses,
+  cardClasses,
+  fieldClasses,
+  pressableCardClasses,
+  sectionTitleClasses,
+} from "@/components/ui/styles";
+
+const rowLinkClasses =
+  `flex min-h-14 flex-1 items-center gap-2 p-4 text-lg ${pressableCardClasses}`;
 
 interface ListProps {
   listId: number;
@@ -47,33 +58,24 @@ export default function ListsPage() {
 
     if (isDeleting) {
       return (
-        <div className=" p-4 justify-between gap-2 items-center border dark:border-white border-black  w-full can-hover:dark:hover:bg-neutral-900  can-hover:hover:bg-neutral-50">
-          <p className="mb-2">You are about to delete {listName}</p>
-          <form
-            onSubmit={handleDeleteConfirm}
-            className="lg:flex grid gap-2 w-full"
-          >
-            <Button type="submit" className="p-2 w-full" text="Confirm" />
-            <Button
-              variant="ghost"
-              onClick={handleCancel}
-              type="button"
-              className="p-2 w-full border-none"
-              text="Cancel"
-            />
+        <div className={`${activeCardClasses} p-4`}>
+          <p className="mb-4">Delete the list “{listName}”? Its highlights stay in your library.</p>
+          <form onSubmit={handleDeleteConfirm} className="grid grid-cols-2 gap-2">
+            <Button variant="ghost" onClick={handleCancel} text="Cancel" />
+            <Button type="submit" text="Delete" />
           </form>
         </div>
       );
     }
 
     return (
-      <div className="flex justify-between gap-2 items-center border dark:border-stone-500 border-stone-400  w-full can-hover:dark:hover:bg-neutral-900  can-hover:hover:bg-stone-100">
+      <div className={`flex items-start ${isEditing ? activeCardClasses : cardClasses}`}>
         {!isEditing ? (
           <>
-            <Link to={`/lists/${listId}`} className="text-lg p-4  w-[90%]">
+            <Link to={`/lists/${listId}`} className={rowLinkClasses}>
               {listName}
             </Link>
-            <div className="flex h-full items-start">
+            <div className="p-1.5">
               <ListOptions
                 activeOption={activeOption}
                 listId={listId}
@@ -84,24 +86,16 @@ export default function ListsPage() {
             </div>
           </>
         ) : (
-          <form
-            onSubmit={handleEditConfirm}
-            className="p-4 w-full lg:flex  gap-2 items-center"
-          >
+          <form onSubmit={handleEditConfirm} className="grid w-full gap-4 p-4">
             <input
+              aria-label="List name"
               value={newName}
               onChange={handleNameChange}
-              className="w-full mb-2 lg:m-0 p-1 border text-lg border-black dark:border-white dark:bg-neutral-900"
+              className={fieldClasses}
             />
-            <div className="lg:flex grid gap-2 w-full">
-              <Button type="submit" className="p-2 w-full" text="Confirm" />
-              <Button
-                variant="ghost"
-                onClick={handleCancel}
-                type="button"
-                className="p-2 w-full border-none"
-                text="Cancel"
-              />
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="ghost" onClick={handleCancel} text="Cancel" />
+              <Button type="submit" text="Save" />
             </div>
           </form>
         )}
@@ -111,13 +105,12 @@ export default function ListsPage() {
 
   function StarredList() {
     return (
-      <Link
-        to={`/starred`}
-        className=" flex gap-2 items-center p-4 border dark:border-stone-500 border-stone-400  w-full can-hover:dark:hover:bg-neutral-900  can-hover:hover:bg-stone-100"
-      >
-        <BiSolidStar size={20} />
-        <p className="text-lg">Starred</p>
-      </Link>
+      <div className={`flex ${cardClasses}`}>
+        <Link to="/starred" className={rowLinkClasses}>
+          <BiSolidStar size={20} aria-hidden="true" />
+          Starred
+        </Link>
+      </div>
     );
   }
 
@@ -140,33 +133,27 @@ export default function ListsPage() {
     if (!isFormActive) {
       return (
         <Button
-          text="Add a new list"
-          type="button"
+          text="New list"
           onClick={() => setIsFormActive(!isFormActive)}
-          className="max-w-[276px] p-2 mb-4 w-full"
+          className="w-full sm:w-auto"
         />
       );
     }
 
     return (
-      <form onSubmit={handleFormSubmit} className="mb-4 lg:max-w-[276px]">
-        <h1 className="text-xl mb-2">Add new list</h1>
-        <div className="grid gap-1">
-          <input
-            type="text"
-            className="mb-1 py-2 px-2 w-full border text-lg border-black dark:border-white dark:bg-neutral-900"
-            placeholder="Enter list name"
-            value={newListName}
-            onChange={handleNewListNameChange}
-          />
-          <Button type="submit" className="p-2 w-full" text="Add list" />
-          <Button
-            variant="ghost"
-            onClick={() => setIsFormActive(false)}
-            type="button"
-            className="p-2 w-full border-none"
-            text="Cancel"
-          />
+      <form onSubmit={handleFormSubmit} className={`${activeCardClasses} grid gap-4 p-4`}>
+        <h2 className={sectionTitleClasses}>New list</h2>
+        <input
+          type="text"
+          aria-label="List name"
+          className={fieldClasses}
+          placeholder="List name"
+          value={newListName}
+          onChange={handleNewListNameChange}
+        />
+        <div className="grid grid-cols-2 gap-2">
+          <Button variant="ghost" onClick={() => setIsFormActive(false)} text="Cancel" />
+          <Button type="submit" text="Create list" />
         </div>
       </form>
     );
@@ -174,25 +161,25 @@ export default function ListsPage() {
 
   if (!lists || lists.length <= 0) {
     return (
-      <>
+      <Page title="Lists">
         <div className="mb-4">
           <StarredList />
         </div>
-        <p className="mb-2">Your lists will appear here</p>
+        <p className="mb-4">Group highlights into lists of your own. They will appear here.</p>
         <AddNewList />
-      </>
+      </Page>
     );
   }
 
   return (
-    <>
-      <div className="grid gap-2 mb-4">
+    <Page title="Lists">
+      <div className="mb-4 grid gap-2">
         <StarredList />
         {lists.map((list) => (
           <List listId={list.id} listName={list.name} key={list.id} />
         ))}
       </div>
       <AddNewList />
-    </>
+    </Page>
   );
 }

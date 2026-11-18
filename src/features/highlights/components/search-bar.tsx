@@ -1,4 +1,5 @@
 import { BiSearch } from "react-icons/bi";
+import { fieldClasses } from "@/components/ui/styles";
 
 interface SearchBarProps {
   setSearchValue: (value: string) => void;
@@ -10,13 +11,17 @@ export default function SearchBar({ setSearchValue }: SearchBarProps) {
   }
 
   return (
-    <div className="text-neutral-500 py-1.5 w-full flex items-center border-solid border-2 border-stone-500 dark:border-stone-400 ">
-      <div className="pl-4">
-        <BiSearch size={20} />
-      </div>
+    <div className="relative">
+      <BiSearch
+        size={20}
+        aria-hidden="true"
+        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600 dark:text-neutral-300"
+      />
       <input
+        type="search"
+        aria-label="Search highlights"
         onChange={handleSearch}
-        className="p-2 w-full h-full text-black dark:text-white dark:bg-neutral-800"
+        className={`${fieldClasses} pl-10`}
         placeholder="Search"
       />
     </div>

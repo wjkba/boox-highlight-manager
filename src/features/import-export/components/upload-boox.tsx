@@ -2,6 +2,13 @@ import { useState } from "react";
 import { type NewHighlight } from "@/lib/db/types";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "@/components/ui/button";
+import {
+  errorTextClasses,
+  fieldClasses,
+  labelClasses,
+  metaTextClasses,
+  sectionTitleClasses,
+} from "@/components/ui/styles";
 import { importHighlights } from "../api";
 import { parseBooxFile } from "../sources";
 
@@ -47,28 +54,41 @@ export default function UploadBoox() {
     } finally { setBusy(false); }
   }
 
-  if (confirming) return <form className="grid gap-2 p-2 mb-2">
-    <h1 className="text-xl">Confirm Boox import</h1>
-    <p>Detected {parsed?.length ?? 0} highlights.</p>
-    <label htmlFor="boox-title">Book title:</label>
-    <input id="boox-title" value={title} onChange={(e) => setTitle(e.target.value)} className="py-2 px-2 w-full border dark:bg-neutral-900" />
-    <label htmlFor="boox-author">Book author:</label>
-    <input id="boox-author" value={author} onChange={(e) => setAuthor(e.target.value)} className="py-2 px-2 w-full border dark:bg-neutral-900" />
-    {error && <p className="text-red-500">{error}</p>}
-    <Button type="submit" onClick={confirm} disabled={busy} className="p-2 w-full" text={busy ? "Saving…" : "Confirm"} />
+  if (confirming) return <form className="grid gap-4">
+    <div>
+      <h2 className={sectionTitleClasses}>Confirm Boox import</h2>
+      <p className={metaTextClasses}>Detected {parsed?.length ?? 0} highlights. Check the details before saving.</p>
+    </div>
+    <div>
+      <label htmlFor="boox-title" className={labelClasses}>Book title</label>
+      <input id="boox-title" value={title} onChange={(e) => setTitle(e.target.value)} className={fieldClasses} />
+    </div>
+    <div>
+      <label htmlFor="boox-author" className={labelClasses}>Book author</label>
+      <input id="boox-author" value={author} onChange={(e) => setAuthor(e.target.value)} className={fieldClasses} />
+    </div>
+    {error && <p className={errorTextClasses} role="alert">{error}</p>}
+    <Button type="submit" onClick={confirm} disabled={busy} className="w-full" text={busy ? "Saving…" : "Save highlights"} />
   </form>;
 
-  if (completed) return <div className="grid gap-2 p-2 mb-2">
-    <p className="text-lg font-medium">{message}</p><p>You can continue importing or view your highlights.</p>
-    <div className="flex gap-2"><Button text="Continue" type="button" onClick={() => { setCompleted(false); setFile(null); }} className="p-2 w-full" /><Button text="View highlights" type="button" onClick={() => navigate("/all")} className="p-2 w-full" /></div>
+  if (completed) return <div className="grid gap-4">
+    <div>
+      <output className={`${sectionTitleClasses} block`}>{message}</output>
+      <p className={metaTextClasses}>You can continue importing or view your highlights.</p>
+    </div>
+    <div className="grid grid-cols-2 gap-2"><Button text="Import another" onClick={() => { setCompleted(false); setFile(null); }} /><Button text="View highlights" onClick={() => navigate("/all")} /></div>
   </div>;
 
-  return <form className="grid gap-2">
-    <h1 className="text-xl">Import Boox annotations file</h1>
-    <Link to="/help" className="mb-2 text-blue-600 dark:text-blue-400 underline">How to get Onyx Boox annotations file</Link>
-    <label htmlFor="boox-file">Boox annotations TXT file:</label>
-    <input id="boox-file" className="w-full" onChange={(e) => { setFile(e.target.files?.[0] ?? null); setError(null); }} type="file" accept=".txt,text/plain" />
-    {error && <p className="text-red-500">{error}</p>}
-    <Button text={busy ? "Parsing…" : "Upload"} type="button" onClick={upload} disabled={busy} className="p-2 w-full" />
+  return <form className="grid gap-4">
+    <div>
+      <h2 className={sectionTitleClasses}>Boox annotations</h2>
+      <p className={metaTextClasses}>The TXT file Boox exports from a book’s annotations. <Link to="/help" className="underline">How to export it</Link></p>
+    </div>
+    <div>
+      <label htmlFor="boox-file" className={labelClasses}>Annotations file (.txt)</label>
+      <input id="boox-file" className="w-full" onChange={(e) => { setFile(e.target.files?.[0] ?? null); setError(null); }} type="file" accept=".txt,text/plain" />
+    </div>
+    {error && <p className={errorTextClasses} role="alert">{error}</p>}
+    <Button text={busy ? "Reading file…" : "Upload"} onClick={upload} disabled={busy} className="w-full" />
   </form>;
 }

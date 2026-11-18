@@ -1,10 +1,17 @@
 import { useRecentHighlights } from "../hooks";
 import { BiSolidFlame } from "react-icons/bi";
 import Button from "@/components/ui/button";
+import Page from "@/components/ui/page";
+import {
+  cardClasses,
+  metaTextClasses,
+  pressableCardClasses,
+  sectionDividerClasses,
+  sectionTitleClasses,
+} from "@/components/ui/styles";
 import { useEffect, useState } from "react";
 import type { ElementType } from "react";
-import { ScrollRestoration } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, ScrollRestoration, useNavigate } from "react-router-dom";
 
 export default function Home({
   ImportDatabaseComponent,
@@ -23,103 +30,81 @@ export default function Home({
   const [streakCount, setStreakCount] = useState(0);
 
   useEffect(() => {
-    const isCompleted = isDailyReviewCompleted();
-    const currentStreak = getCurrentStreak();
-    setIsReviewCompleted(isCompleted);
-    setStreakCount(currentStreak);
+    setIsReviewCompleted(isDailyReviewCompleted());
+    setStreakCount(getCurrentStreak());
   }, [getCurrentStreak, isDailyReviewCompleted]);
 
-  function DailyReview() {
-    if (!isReviewCompleted) {
-      return (
-        <div className="lg:max-w-[17rem]">
-          <h1 className="text-xl font-medium">Daily review</h1>
-          <div className="flex items-center justify-between mb-4">
-            <p>Daily review is available</p>
-            {streakCount > 0 && (
-              <div className="flex  items-center gap-1">
-                <BiSolidFlame size={16} />
-                <p className="text-sm">
-                  {streakCount} {streakCount === 1 ? "day" : "days"}
-                </p>
-              </div>
-            )}
-          </div>
-
-          <Button
-            variant="primary"
-            className="w-full p-2"
-            text="Open Daily Review"
-            onClick={() => navigate("/review")}
-          />
-        </div>
-      );
-    } else return;
-  }
+  // Avoid flashing the welcome screen while the database is still loading.
+  if (highlights === undefined) return null;
 
   if (highlights && highlights.length > 0)
     return (
-      <>
-
-          <section id="newest-highlights" className="mb-8">
-            {highlights && highlights.length > 0 && (
-              <div>
-                <h1 className="text-xl font-medium mb-2">Newest Highlights</h1>
-                <div className="grid xs:grid-cols-3 gap-2">
-                  {highlights.map((highlight) => (
-                    <button
-                      type="button"
-                      key={highlight.id}
-                      onClick={() => navigate(`/highlight/${highlight.id}`)}
-                      className="max-h-[10rem] lg:max-h-[12rem] text-xs lg:text-base w-full overflow-hidden dark:border-stone-500 border-stone-400 border-solid border p-2 hover-trigger text-left"
-                    >
-                      {highlight.quote}
-                    </button>
-                  ))}
-                </div>
-              </div>
+      <Page title="Home">
+        <section aria-labelledby="home-review" className={`${cardClasses} mb-10 p-6`}>
+          <div className="mb-2 flex items-baseline justify-between gap-4">
+            <h2 id="home-review" className={sectionTitleClasses}>
+              Daily review
+            </h2>
+            {streakCount > 0 && (
+              <p className={`flex items-center gap-1 tabular-nums ${metaTextClasses}`}>
+                <BiSolidFlame size={16} aria-hidden="true" />
+                {streakCount} {streakCount === 1 ? "day" : "days"}
+              </p>
             )}
-          </section>
+          </div>
+          {isReviewCompleted ? (
+            <p>You’ve finished today’s review. Come back tomorrow.</p>
+          ) : (
+            <>
+              <p className="mb-6">A few highlights are waiting for you today.</p>
+              <Button
+                text="Start daily review"
+                onClick={() => navigate("/review")}
+                className="w-full sm:w-auto"
+              />
+            </>
+          )}
+        </section>
 
-          <section id="daily-review" className="mb-8">
-            <DailyReview />
-          </section>
-
-          <section className="mb-8" id="all-highlights">
-            <h1 className="text-xl font-medium mb-2">All Highlights</h1>
-            <Button
-              variant="secondary"
-              className="w-full lg:max-w-[276px] p-2"
-              text="View All Highlights"
-              onClick={() => navigate("/all")}
-            />
-          </section>
-
-          <section id="add-highlight">
-            <h1 className="text-xl mb-2 font-medium">Add New Highlight</h1>
-            <Button
-              variant="secondary"
-              className="w-full lg:max-w-[276px] p-2"
-              text="Add New Highlight"
-              onClick={() => navigate("/add")}
-            />
-          </section>
+        <section aria-labelledby="home-newest">
+          <div className="mb-4 flex items-baseline justify-between gap-4">
+            <h2 id="home-newest" className={sectionTitleClasses}>
+              Newest highlights
+            </h2>
+            <Link to="/all" className="min-h-11 content-center text-sm font-medium underline">
+              See all
+            </Link>
+          </div>
+          <ul className="grid gap-2 sm:grid-cols-3">
+            {highlights.map((highlight) => (
+              <li key={highlight.id}>
+                <Link
+                  to={`/highlight/${highlight.id}`}
+                  className={`${cardClasses} block h-full p-4 font-literata leading-relaxed ${pressableCardClasses}`}
+                >
+                  <span className="line-clamp-5">{highlight.quote}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <ScrollRestoration />
-      </>
+      </Page>
     );
 
   return (
-
-      <div className="lg:max-w-[450px]">
-        <h1 className="mb-6 text-2xl font-medium">
-          Import your highlights to get started
-        </h1>
-        <div className="mb-8">
-          <UploadBooxComponent />
-        </div>
-        <ImportDatabaseComponent />
+    <Page
+      title="Welcome"
+      description="Import your highlights to get started. Everything stays on this device."
+      width="narrow"
+    >
+      <div className="grid gap-10">
+        <UploadBooxComponent />
+        <section className={sectionDividerClasses}>
+          <ImportDatabaseComponent />
+        </section>
       </div>
-
+    </Page>
   );
 }

@@ -2,7 +2,8 @@ import { useAllHighlights } from "../hooks";
 import HighlightsList from "../components/highlights-list";
 import SearchBar from "../components/search-bar";
 import SortOptions from "../components/sort-options";
-import { outlineInverseClasses } from "@/components/ui/button";
+import Button from "@/components/ui/button";
+import Page from "@/components/ui/page";
 import { useEffect, useState } from "react";
 import type { ElementType } from "react";
 import { ScrollRestoration } from "react-router-dom";
@@ -40,23 +41,19 @@ export default function AllHighlightsPage({ UploadBooxComponent }: { UploadBooxC
 
   if (allHighlights && allHighlights.length <= 0) {
     return (
-
-        <div className="lg:max-w-[450px]">
-          <UploadBooxComponent />
-        </div>
-
+      <Page title="Highlights" width="narrow">
+        <UploadBooxComponent />
+      </Page>
     );
   }
 
   if (displayedHighlights) {
     return (
-      <>
-
-          <div className="lg:max-w-[892px]">
-            <div className="mb-4">
+      <Page title="Highlights">
+            <div className="mb-2">
               <SearchBar setSearchValue={setSearchValue} />
             </div>
-            <div className="mb-2">
+            <div className="mb-4">
               <SortOptions
                 sortOption={sortOption}
                 setSortOption={setSortOption}
@@ -65,21 +62,11 @@ export default function AllHighlightsPage({ UploadBooxComponent }: { UploadBooxC
               />
             </div>
             <HighlightsList highlights={displayedHighlights} />
-            <div className="flex justify-center mb-12">
-              <button
-                type="button"
-                onClick={handleLoadMore}
-                className={`${
-                  limit > displayedHighlights.length ? "hidden " : " "
-                }} mt-6 lg:max-w-[60%] w-full p-3 ${outlineInverseClasses}`}
-              >
-                Load more
-              </button>
-            </div>
-          </div>
-
+            {limit <= displayedHighlights.length && (
+              <Button text="Load more" onClick={handleLoadMore} className="mt-6 w-full" />
+            )}
         <ScrollRestoration />
-      </>
+      </Page>
     );
   }
 }
