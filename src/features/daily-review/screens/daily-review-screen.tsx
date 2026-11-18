@@ -1,4 +1,4 @@
-import Navbar from "@/components/layout/navbar";
+import FocusHeader from "@/components/layout/focus-header";
 import { completeDailyReview, setHighlightStarred } from "../api";
 import { useReviewBook } from "../hooks";
 import {
@@ -35,7 +35,7 @@ function ReviewShell({
       }`}
     >
       <div className="w-full max-w-[600px] px-4 lg:max-w-[1200px]">
-        <Navbar variant="focus" />
+        <FocusHeader />
         <main className="min-h-dvh lg:pt-8">{children}</main>
       </div>
     </div>

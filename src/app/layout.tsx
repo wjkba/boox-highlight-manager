@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import Navbar from "@/components/layout/navbar";
 import SidebarMenu from "@/components/layout/sidebar-menu";
 import BottomTabBar from "@/components/layout/bottom-tab-bar";
 
@@ -19,11 +18,10 @@ function ContentFallback() {
 export const Layout = () => {
   return (
     <div className="grid place-items-center dark:bg-neutral-800 dark:text-white">
-      <div className=" w-full max-w-[600px] lg:max-w-[1200px] px-4">
-        <Navbar />
-        <main className="min-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))] lg:flex lg:gap-[32px] lg:pb-8 lg:pt-8">
+      <div className="w-full max-w-[600px] px-4 lg:max-w-[1200px]">
+        <main className="min-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))] pt-6 lg:flex lg:gap-[32px] lg:pb-0 lg:pt-0">
           <SidebarMenu />
-          <div className="lg:w-full">
+          <div className="lg:w-full lg:py-8">
             <Suspense fallback={<ContentFallback />}>
               <Outlet />
             </Suspense>
