@@ -40,54 +40,66 @@ export default function Home({
   if (highlights && highlights.length > 0)
     return (
       <Page title="Home">
-        <section aria-labelledby="home-review" className={`${cardClasses} mb-10 p-6`}>
-          <div className="mb-2 flex items-baseline justify-between gap-4">
-            <h2 id="home-review" className={sectionTitleClasses}>
-              Daily review
-            </h2>
-            {streakCount > 0 && (
-              <p className={`flex items-center gap-1 tabular-nums ${metaTextClasses}`}>
-                <BiSolidFlame size={16} aria-hidden="true" />
-                {streakCount} {streakCount === 1 ? "day" : "days"}
+        <div className="grid gap-8">
+          <section
+            aria-labelledby="home-review"
+            className={`${cardClasses} flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between lg:px-5`}
+          >
+            <div>
+              <div className="mb-1 flex flex-wrap items-baseline gap-x-3">
+                <h2 id="home-review" className={sectionTitleClasses}>
+                  Daily review
+                </h2>
+                {streakCount > 0 && (
+                  <p
+                    className={`flex items-center gap-1 tabular-nums ${metaTextClasses}`}
+                  >
+                    <BiSolidFlame size={16} aria-hidden="true" />
+                    {streakCount} {streakCount === 1 ? "day" : "days"} streak
+                  </p>
+                )}
+              </div>
+              <p>
+                {isReviewCompleted
+                  ? "You’ve finished today’s review. Come back tomorrow."
+                  : "A few highlights are waiting for you today."}
               </p>
-            )}
-          </div>
-          {isReviewCompleted ? (
-            <p>You’ve finished today’s review. Come back tomorrow.</p>
-          ) : (
-            <>
-              <p className="mb-6">A few highlights are waiting for you today.</p>
+            </div>
+            {!isReviewCompleted && (
               <Button
                 text="Start daily review"
                 onClick={() => navigate("/review")}
-                className="w-full sm:w-auto"
+                className="w-full shrink-0 sm:w-auto"
               />
-            </>
-          )}
-        </section>
+            )}
+          </section>
 
-        <section aria-labelledby="home-newest">
-          <div className="mb-4 flex items-baseline justify-between gap-4">
-            <h2 id="home-newest" className={sectionTitleClasses}>
-              Newest highlights
-            </h2>
-            <Link to="/all" className="min-h-11 content-center text-sm font-medium underline">
-              See all
-            </Link>
-          </div>
-          <ul className="grid gap-2 sm:grid-cols-3">
-            {highlights.map((highlight) => (
-              <li key={highlight.id}>
-                <Link
-                  to={`/highlight/${highlight.id}`}
-                  className={`${cardClasses} block h-full p-4 font-literata leading-relaxed ${pressableCardClasses}`}
-                >
-                  <span className="line-clamp-5">{highlight.quote}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+          <section aria-labelledby="home-newest">
+            <div className="mb-3 flex items-center justify-between gap-4">
+              <h2 id="home-newest" className={sectionTitleClasses}>
+                Newest highlights
+              </h2>
+              <Link
+                to="/all"
+                className="min-h-11 content-center text-sm font-medium underline"
+              >
+                See all
+              </Link>
+            </div>
+            <ul className="grid gap-2 sm:grid-cols-3">
+              {highlights.map((highlight) => (
+                <li key={highlight.id}>
+                  <Link
+                    to={`/highlight/${highlight.id}`}
+                    className={`${cardClasses} block h-full p-4 font-literata leading-relaxed lg:px-5 ${pressableCardClasses}`}
+                  >
+                    <span className="line-clamp-5">{highlight.quote}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
 
         <ScrollRestoration />
       </Page>
