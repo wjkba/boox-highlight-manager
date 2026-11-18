@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import Page from "@/components/ui/page";
+import { fieldClasses, labelClasses, sectionDividerClasses } from "@/components/ui/styles";
 import ImportDatabase from "../components/import-database";
 import UploadBoox from "../components/upload-boox";
 import UploadKoreader from "../components/upload-koreader";
@@ -10,28 +12,35 @@ export default function ImportPage() {
   const [source, setSource] = useState<ImportSource>("boox");
 
   return (
-    <>
-      <form className="grid gap-2 lg:max-w-[450px] mb-8">
-        <label htmlFor="import-source">Import source</label>
-        <select
-          className="p-2 w-full dark:bg-neutral-900"
-          name="import-source"
-          id="import-source"
-          value={source}
-          onChange={(event) => setSource(event.target.value as ImportSource)}
-        >
-          <option value="boox">Onyx Boox annotations (TXT)</option>
-          <option value="koreader">KOReader highlights (JSON)</option>
-        </select>
-      </form>
+    <Page
+      title="Import"
+      description="Bring in highlights from your e-reader, or restore a backup."
+      width="narrow"
+    >
+      <div className="grid gap-10">
+        <section className="grid gap-4">
+          <div>
+            <label htmlFor="import-source" className={labelClasses}>
+              Import from
+            </label>
+            <select
+              className={fieldClasses}
+              name="import-source"
+              id="import-source"
+              value={source}
+              onChange={(event) => setSource(event.target.value as ImportSource)}
+            >
+              <option value="boox">Onyx Boox annotations (TXT)</option>
+              <option value="koreader">KOReader highlights (JSON)</option>
+            </select>
+          </div>
+          {source === "boox" ? <UploadBoox /> : <UploadKoreader />}
+        </section>
 
-      <div className="lg:max-w-[450px] mb-8">
-        {source === "boox" ? <UploadBoox /> : <UploadKoreader />}
+        <section className={sectionDividerClasses}>
+          <ImportDatabase />
+        </section>
       </div>
-
-      <div className="lg:max-w-[450px]">
-        <ImportDatabase />
-      </div>
-    </>
+    </Page>
   );
 }

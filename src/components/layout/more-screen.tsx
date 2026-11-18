@@ -1,6 +1,7 @@
 import { BiAdjust, BiChevronRight } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import Switch from "@/components/ui/switch";
+import Page from "@/components/ui/page";
 import { SECONDARY_NAV } from "./nav-items";
 import { useTheme } from "./use-theme";
 
@@ -15,8 +16,7 @@ export default function MoreScreen() {
   const { isDark, toggleTheme } = useTheme();
 
   return (
-    <div className="max-w-[600px]">
-      <h1 className="mb-6 text-2xl font-medium">More</h1>
+    <Page title="More" width="narrow">
       {SECONDARY_NAV.map((group) => (
         <section key={group.title} aria-label={group.title} className="mb-8">
           <h2 className={groupHeadingClasses}>{group.title}</h2>
@@ -63,6 +63,6 @@ export default function MoreScreen() {
           />
         </div>
       </section>
-    </div>
+    </Page>
   );
 }

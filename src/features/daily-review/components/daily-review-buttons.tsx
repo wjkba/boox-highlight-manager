@@ -19,7 +19,7 @@ export default function DailyReviewButtons({
   return (
     <nav
       aria-label="Review navigation"
-      className="fixed inset-x-0 bottom-0 z-20 border-t border-stone-300 bg-white px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 dark:border-stone-600 dark:bg-neutral-900 sm:static sm:mt-6 sm:border-0 sm:bg-transparent sm:p-0 lg:mt-4"
+      className="fixed inset-x-0 bottom-0 z-20 border-t-2 border-neutral-900 bg-white px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 dark:border-neutral-100 dark:bg-neutral-800 sm:static sm:mt-6 sm:border-0 sm:bg-transparent sm:p-0"
     >
       <div className="mx-auto grid w-full max-w-[20rem] grid-cols-2 gap-2">
         <Button

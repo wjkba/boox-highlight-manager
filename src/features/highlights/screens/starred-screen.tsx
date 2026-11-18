@@ -1,37 +1,20 @@
 import { useStarredHighlights, useHighlightBooks } from "../hooks";
 import HighlightCard from "../components/highlight-card";
+import Page from "@/components/ui/page";
+import EmptyState from "@/components/ui/empty-state";
 
 export default function StarredPage() {
   const starredHighlights = useStarredHighlights();
   const books = useHighlightBooks(starredHighlights ?? []);
 
-
-  if (starredHighlights) {
-    // const sortedHighlights = highlights.map((highlight) => ({
-    //   ...highlight,
-    //   quotes: highlight.quotes.sort(
-    //     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    //   ),
-    // }));
-
-    // const starredHighlights = sortedHighlights
-    //   .filter((highlight) => highlight.quotes.some((quote) => quote.starred))
-    //   .map((highlight) => ({
-    //     ...highlight,
-    //     quotes: highlight.quotes.filter((quote) => quote.starred),
-    //   }));
-
-    if (starredHighlights.length <= 0) {
-      return (
-
-          <p>Starred highlights will appear here.</p>
-
-      );
-    }
-
-    return (
-      <>
-        <h1 className="text-xl mb-2">Starred</h1>
+  return (
+    <Page title="Starred" back={{ to: "/lists", label: "Lists" }}>
+      {starredHighlights?.length === 0 && (
+        <EmptyState title="Nothing starred yet">
+          Star a highlight from its options menu or during daily review.
+        </EmptyState>
+      )}
+      {starredHighlights && starredHighlights.length > 0 && (
         <div className="grid gap-2">
           {starredHighlights.map((highlight) => (
             <HighlightCard
@@ -44,7 +27,7 @@ export default function StarredPage() {
             />
           ))}
         </div>
-      </>
-    );
-  }
+      )}
+    </Page>
+  );
 }

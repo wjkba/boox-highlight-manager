@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "@/components/ui/button";
+import {
+  errorTextClasses,
+  fieldClasses,
+  labelClasses,
+  successTextClasses,
+} from "@/components/ui/styles";
 import { addBook, addHighlight, findBook } from "../api";
 
 //TODO: ogarnij case sensitivity
@@ -85,12 +91,12 @@ export default function AddHighlight() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col dark:border-stone-500 gap-[12px] border-solid border border-stone-400 p-4 hover-trigger"
+      className="grid gap-4"
     >
       <div>
         <label
           htmlFor="add-highlight-title"
-          className="block mb-2 text-neutral-600 dark:text-neutral-300"
+          className={labelClasses}
         >
           Book title
         </label>
@@ -100,13 +106,13 @@ export default function AddHighlight() {
           value={title}
           onChange={handleTitleChange}
           placeholder="e.g. Meditations"
-          className="dark:bg-neutral-900 mb-2 w-full border border-black p-2"
+          className={fieldClasses}
         />
       </div>
       <div>
         <label
           htmlFor="add-highlight-author"
-          className="block mb-2 text-neutral-600 dark:text-neutral-300"
+          className={labelClasses}
         >
           Author
         </label>
@@ -116,14 +122,14 @@ export default function AddHighlight() {
           value={author}
           onChange={handleAuthorChange}
           placeholder="e.g. Marcus Aurelius"
-          className="dark:bg-neutral-900 mb-2 w-full border border-black p-2"
+          className={fieldClasses}
         />
       </div>
 
       <div>
         <label
           htmlFor="add-highlight-quote"
-          className="block mb-2 text-neutral-600 dark:text-neutral-300"
+          className={labelClasses}
         >
           Highlight
         </label>
@@ -132,7 +138,7 @@ export default function AddHighlight() {
           ref={highlightTextareaRef}
           value={highlightText}
           onChange={handleHighlightTextChange}
-          className="dark:bg-neutral-900  resize-none min-h-[6rem] w-full border border-black p-2"
+          className={`${fieldClasses} min-h-[8rem] resize-y font-literata`}
         />
       </div>
 
@@ -140,7 +146,7 @@ export default function AddHighlight() {
         {successMessage && (
           <p
             aria-live="polite"
-            className="text-sm text-emerald-700 dark:text-emerald-400"
+            className={successTextClasses}
           >
             {successMessage}
           </p>
@@ -148,7 +154,7 @@ export default function AddHighlight() {
         {errorMessage && (
           <p
             aria-live="polite"
-            className="text-sm text-red-700 dark:text-red-400"
+            className={errorTextClasses}
           >
             {errorMessage}
           </p>
@@ -156,8 +162,8 @@ export default function AddHighlight() {
       </div>
 
       <Button
-        className="w-full lg:max-w-[276px] p-2"
-        text={isSubmitting ? "Saving..." : "Add highlight"}
+        className="w-full"
+        text={isSubmitting ? "Saving…" : "Add highlight"}
         type="submit"
         disabled={isSubmitting}
       />

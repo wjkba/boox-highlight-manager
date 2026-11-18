@@ -9,9 +9,38 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Highlight } from "@/lib/db/types";
 import Button from "@/components/ui/button";
+import Page from "@/components/ui/page";
+import EmptyState from "@/components/ui/empty-state";
+import { cardClasses, errorTextClasses, metaTextClasses } from "@/components/ui/styles";
+import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import type { ElementType } from "react";
 import { BiSolidFlame } from "react-icons/bi";
+
+/** Full-screen review: no tab bar, just a way back home. */
+function ReviewShell({
+  children,
+  busy = false,
+  padForButtons = false,
+}: {
+  children: ReactNode;
+  busy?: boolean;
+  padForButtons?: boolean;
+}) {
+  return (
+    <div
+      aria-busy={busy || undefined}
+      className={`grid place-items-center dark:bg-neutral-800 dark:text-white ${
+        padForButtons ? "pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-0" : ""
+      }`}
+    >
+      <div className="w-full max-w-[600px] px-4 lg:max-w-[1200px]">
+        <Navbar variant="focus" />
+        <main className="min-h-dvh lg:pt-8">{children}</main>
+      </div>
+    </div>
+  );
+}
 
 export default function DailyReviewPage({
   DailyReviewButtonsComponent,
@@ -163,67 +192,40 @@ export default function DailyReviewPage({
 
   if (isLoading) {
     return (
-      <div className="grid place-items-center" aria-busy="true">
-        <div className=" w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar variant="focus" />
-          <main className="min-h-screen lg:flex lg:gap-[32px] lg:pt-6">
-            <div className="lg:w-full">
-              <h1 className="text-2xl font-medium mb-6 lg:mb-5">Daily review</h1>
-              <div className="max-w-[600px] border border-stone-400 dark:border-stone-500 p-6 lg:p-5">
-                <output aria-live="polite" className="font-literata text-lg">
-                  Loading today’s highlights…
-                </output>
-                <div className="mt-6 grid gap-3 lg:mt-5" aria-hidden="true">
-                  <div className="h-3 w-1/3 bg-stone-200 dark:bg-neutral-700" />
-                  <div className="h-3 w-full bg-stone-200 dark:bg-neutral-700" />
-                  <div className="h-3 w-4/5 bg-stone-200 dark:bg-neutral-700" />
-                </div>
-              </div>
+      <ReviewShell busy>
+        <Page title="Daily review" width="narrow">
+          <div className={`${cardClasses} p-6`}>
+            <output aria-live="polite" className="font-literata text-lg">
+              Loading today’s highlights…
+            </output>
+            <div className="mt-6 grid gap-3" aria-hidden="true">
+              <div className="h-3 w-1/3 bg-stone-200 dark:bg-neutral-700" />
+              <div className="h-3 w-full bg-stone-200 dark:bg-neutral-700" />
+              <div className="h-3 w-4/5 bg-stone-200 dark:bg-neutral-700" />
             </div>
-          </main>
-        </div>
-      </div>
+          </div>
+        </Page>
+      </ReviewShell>
     );
   }
 
   if (loadError) {
     return (
-      <div className="grid place-items-center">
-        <div className="w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar variant="focus" />
-          <main className="min-h-screen lg:flex lg:gap-[32px] lg:pt-6">
-            <div className="lg:w-full">
-              <h1 className="text-2xl font-medium mb-4 lg:mb-3">Daily review</h1>
-              <section
-                className="max-w-[600px] border border-stone-400 dark:border-stone-500 p-6 lg:p-5"
-                aria-labelledby="review-error-title"
-              >
-                <h2
-                  id="review-error-title"
-                  className="text-lg font-medium mb-2"
-                >
-                  Review unavailable
-                </h2>
-                <p className="max-w-prose mb-6 lg:mb-5">{loadError}</p>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <Button
-                    variant="primary"
-                    text="Try again"
-                    onClick={fetchDaily}
-                    className="p-3"
-                  />
-                  <Button
-                    variant="ghost"
-                    text="Import highlights"
-                    onClick={() => navigate("/import")}
-                    className="p-3"
-                  />
-                </div>
-              </section>
-            </div>
-          </main>
-        </div>
-      </div>
+      <ReviewShell>
+        <Page title="Daily review" width="narrow">
+          <EmptyState
+            title="Review unavailable"
+            action={
+              <div className="grid gap-2 sm:flex">
+                <Button text="Try again" onClick={fetchDaily} />
+                <Button variant="ghost" text="Import highlights" onClick={() => navigate("/import")} />
+              </div>
+            }
+          >
+            {loadError}
+          </EmptyState>
+        </Page>
+      </ReviewShell>
     );
   }
 
@@ -232,136 +234,106 @@ export default function DailyReviewPage({
     (!dailyHighlights || dailyHighlights.length === 0)
   ) {
     return (
-      <div className="grid place-items-center">
-        <div className="w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar variant="focus" />
-          <main className="min-h-screen lg:flex lg:gap-[32px] lg:pt-6">
-            <div className="lg:w-full">
-              <h1 className="text-2xl font-medium mb-4 lg:mb-3">Daily review</h1>
-              <section
-                className="max-w-[600px] border border-stone-400 dark:border-stone-500 p-6 lg:p-5"
-                aria-labelledby="review-empty-title"
-              >
-                <h2
-                  id="review-empty-title"
-                  className="text-lg font-medium mb-2"
-                >
-                  Nothing is due today
-                </h2>
-                <p className="max-w-prose mb-6 lg:mb-5">
-                  Import more highlights or return tomorrow for another quiet
-                  reading session.
-                </p>
-                <Button
-                  variant="primary"
-                  text="Import highlights"
-                  onClick={() => navigate("/import")}
-                  className="w-full p-3 sm:w-auto"
-                />
-              </section>
-            </div>
-          </main>
-        </div>
-      </div>
+      <ReviewShell>
+        <Page title="Daily review" width="narrow">
+          <EmptyState
+            title="Nothing is due today"
+            action={
+              <Button
+                text="Import highlights"
+                onClick={() => navigate("/import")}
+                className="w-full sm:w-auto"
+              />
+            }
+          >
+            Import more highlights or return tomorrow for another quiet reading
+            session.
+          </EmptyState>
+        </Page>
+      </ReviewShell>
     );
   }
 
   if (reviewIsCompleted) {
+    const streak =
+      streakCount || Number(localStorage.getItem("streakCount") ?? 0);
     return (
-      <div className="grid place-items-center ">
-        <div className=" w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar variant="focus" />
-          <main className="min-h-screen lg:flex lg:gap-[32px] lg:pt-6">
-            <div className="lg:w-full">
-              <h1 className="text-xl mb-2">Daily review</h1>
-              <div className="max-w-[600px] border border-stone-400 dark:border-stone-500 p-6 lg:p-5">
-                <div className="grid gap-2 mb-4 lg:mb-3">
-                  <div className="flex items-center gap-1">
-                    <BiSolidFlame size={16} />
-                    <p>
-                      Streak:{" "}
-                      {streakCount ||
-                        Number(localStorage.getItem("streakCount") ?? 0)}
-                    </p>
-                  </div>
-                  <output aria-live="polite">
-                    You’ve completed your review for today.
-                  </output>
-                  {toDeleteIds.length > 0 && (
-                    <p>Deleted {toDeleteIds.length} highlights</p>
-                  )}
-                </div>
-                <Button
-                  text="Return to home"
-                  onClick={() => navigate("/")}
-                  variant="primary"
-                  className="w-full p-3 lg:max-w-[300px]"
-                />
-              </div>
-            </div>
-          </main>
-        </div>
-      </div>
+      <ReviewShell>
+        <Page title="Daily review" width="narrow">
+          <EmptyState
+            title="Done for today"
+            action={
+              <Button
+                text="Back to home"
+                onClick={() => navigate("/home")}
+                className="w-full sm:w-auto"
+              />
+            }
+          >
+            <output aria-live="polite" className="grid gap-1">
+              <span>You’ve completed your review for today.</span>
+              <span className={`flex items-center gap-1 ${metaTextClasses}`}>
+                <BiSolidFlame size={16} aria-hidden="true" />
+                Streak: {streak} {streak === 1 ? "day" : "days"}
+              </span>
+              {toDeleteIds.length > 0 && (
+                <span className={metaTextClasses}>
+                  Deleted {toDeleteIds.length} highlights
+                </span>
+              )}
+            </output>
+          </EmptyState>
+        </Page>
+      </ReviewShell>
     );
   }
 
   if (activeHighlight && dailyHighlights) {
     return (
-      <div className="grid place-items-center pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-0">
-        <div className=" w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar variant="focus" />
-          <main className="min-h-dvh scroll-pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:flex lg:gap-[32px] lg:pt-8 sm:scroll-pb-0">
-            <div className="lg:w-full">
-              <div className="mb-16 max-w-[600px] lg:mb-12 lg:max-w-[760px]">
-                <div className="mb-4 flex items-baseline justify-between gap-4 lg:mb-3">
-                  <h1 className="text-lg font-medium">Daily review</h1>
-                  <output
-                    className="shrink-0 text-xs tabular-nums text-neutral-600 dark:text-neutral-300"
-                    aria-live="polite"
-                  >
-                    Highlight {currentIndex + 1} of {dailyHighlights.length}
-                  </output>
-                </div>
-                {actionError && (
-                  <p
-                    className="mb-4 text-sm text-red-700 dark:text-red-300"
-                    role="alert"
-                  >
-                    {actionError}
-                  </p>
-                )}
-                {actionStatus && (
-                  <output className="sr-only" aria-live="polite">
-                    {actionStatus}
-                  </output>
-                )}
-                <HighlightCardComponent
-                  key={`${activeHighlight.id}-${currentIndex}`}
-                  bookId={activeHighlight.bookId}
-                  id={activeHighlight.id}
-                  starred={activeHighlight.starred}
-                  text={activeHighlight.quote}
-                  book={activeBook}
-                  onStar={handleAddToStarred}
-                  onDelete={handleMarkForDelete}
-                  isDeleted={toDeleteIds.includes(activeHighlight.id)}
-                  isFinishing={isFinishing}
-                  isStarUpdating={isStarUpdating}
-                  options={["hideDelete", "hideStar"]}
-                />
-                <DailyReviewButtonsComponent
-                  currentIndex={currentIndex}
-                  onBack={handleBack}
-                  onNext={handleNext}
-                  numberOfCards={dailyHighlights.length}
-                  isFinishing={isFinishing}
-                  isStarUpdating={isStarUpdating}
-                />
-              </div>
-            </div>
-          </main>
-        </div>
-      </div>
+      <ReviewShell padForButtons>
+        <Page
+          title="Daily review"
+          description={
+            <output aria-live="polite" className="tabular-nums">
+              Highlight {currentIndex + 1} of {dailyHighlights.length}
+            </output>
+          }
+          width="narrow"
+        >
+          {actionError && (
+            <p className={`mb-4 ${errorTextClasses}`} role="alert">
+              {actionError}
+            </p>
+          )}
+          {actionStatus && (
+            <output className="sr-only" aria-live="polite">
+              {actionStatus}
+            </output>
+          )}
+          <HighlightCardComponent
+            key={`${activeHighlight.id}-${currentIndex}`}
+            bookId={activeHighlight.bookId}
+            id={activeHighlight.id}
+            starred={activeHighlight.starred}
+            text={activeHighlight.quote}
+            book={activeBook}
+            onStar={handleAddToStarred}
+            onDelete={handleMarkForDelete}
+            isDeleted={toDeleteIds.includes(activeHighlight.id)}
+            isFinishing={isFinishing}
+            isStarUpdating={isStarUpdating}
+            options={["hideDelete", "hideStar"]}
+          />
+          <DailyReviewButtonsComponent
+            currentIndex={currentIndex}
+            onBack={handleBack}
+            onNext={handleNext}
+            numberOfCards={dailyHighlights.length}
+            isFinishing={isFinishing}
+            isStarUpdating={isStarUpdating}
+          />
+        </Page>
+      </ReviewShell>
     );
   }
 }

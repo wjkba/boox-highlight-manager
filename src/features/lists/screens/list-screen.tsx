@@ -4,6 +4,8 @@ import type { ElementType } from "react";
 import { Book, Highlight, List } from "@/lib/db/types";
 import { useEffect, useState } from "react";
 import { ScrollRestoration, useParams } from "react-router-dom";
+import Page from "@/components/ui/page";
+import EmptyState from "@/components/ui/empty-state";
 
 async function fetchHighlights(list: List) {
   return getListHighlights(list.highlightIds) as Promise<Highlight[]>;
@@ -25,19 +27,21 @@ export default function ListPage({ HighlightCardComponent }: { HighlightCardComp
     }
   }, [list]);
 
+  const back = { to: "/lists", label: "Lists" };
+
   if (list && list.highlightIds.length <= 0) {
     return (
-      <>
-        <p>Highlights added to this list will appear here</p>
-      </>
+      <Page title={list.name} back={back}>
+        <EmptyState title="This list is empty">
+          Add highlights to it from any highlight’s options menu.
+        </EmptyState>
+      </Page>
     );
   }
 
   if (list && highlights) {
     return (
-      <>
-        {list && <h1 className="text-xl mb-2">{list.name}</h1>}
-
+      <Page title={list.name} back={back}>
         <div className="grid gap-2">
           {highlights.map((highlight) => (
             <HighlightCardComponent
@@ -52,14 +56,14 @@ export default function ListPage({ HighlightCardComponent }: { HighlightCardComp
           ))}
         </div>
         <ScrollRestoration />
-      </>
+      </Page>
     );
   }
 
   return (
-    <>
-      {!list && <p>List not found.</p>}
+    <Page back={back}>
+      {list === null && <EmptyState title="List not found">It may have been deleted.</EmptyState>}
       <ScrollRestoration />
-    </>
+    </Page>
   );
 }

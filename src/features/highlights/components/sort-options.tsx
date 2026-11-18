@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { BiSortAlt2 } from "react-icons/bi";
-import { BiSortUp } from "react-icons/bi";
-import { BiSortDown } from "react-icons/bi";
+import { BiSortDown, BiSortUp } from "react-icons/bi";
+import Button from "@/components/ui/button";
+import { fieldClasses } from "@/components/ui/styles";
 
 interface SortOptionsProps {
   sortOption: string;
@@ -10,90 +9,46 @@ interface SortOptionsProps {
   setSortOrder: (option: "desc" | "asc") => void;
 }
 
+const SORT_FIELDS = [
+  { value: "dateHighlighted", label: "Date highlighted" },
+  { value: "dateAdded", label: "Date added" },
+  { value: "alphabet", label: "Alphabetical" },
+];
+
 export default function SortOptions({
   sortOption,
   setSortOption,
   sortOrder,
   setSortOrder,
 }: SortOptionsProps) {
-  const [isSortHidden, setIsSortHidden] = useState(true);
-
-  function handleSortVisibility() {
-    setIsSortHidden(!isSortHidden);
-  }
-
-  function handleSortChange(option: string) {
-    setSortOption(option);
-  }
-
-  function handleSortOrderChange() {
-    if (sortOrder === "desc") setSortOrder("asc");
-    if (sortOrder === "asc") setSortOrder("desc");
-  }
+  const isDescending = sortOrder === "desc";
+  const SortIcon = isDescending ? BiSortDown : BiSortUp;
 
   return (
-    <div>
-      <div className="flex justify-end mb-2">
-        <button
-          type="button"
-          onClick={handleSortOrderChange}
-          className="text-neutral-600 dark:text-neutral-300 "
-        >
-          {sortOrder === "desc" ? (
-            <BiSortDown size={24} />
-          ) : (
-            <BiSortUp size={24} />
-          )}
-        </button>
-        <button
-          type="button"
-          onClick={handleSortVisibility}
-          className="p-2 flex gap-1 text-neutral-600 dark:text-neutral-300 "
-        >
-          <BiSortAlt2 size={24} />
-          <span className="cursor-pointer">Sort by</span>
-        </button>
-      </div>
-
-      <div
-        className={`${
-          isSortHidden && `hidden lg:hidden `
-        }} lg:flex lg:justify-end grid gap-1`}
+    <div className="flex items-center gap-2">
+      <label htmlFor="sort-field" className="shrink-0 text-sm font-medium">
+        Sort by
+      </label>
+      <select
+        id="sort-field"
+        value={sortOption}
+        onChange={(event) => setSortOption(event.target.value)}
+        className={`${fieldClasses} flex-1 sm:max-w-[14rem]`}
       >
-        <button
-          type="button"
-          onClick={() => handleSortChange("alphabet")}
-          className={`${
-            sortOption === "alphabet"
-              ? "bg-neutral-800 dark:bg-white text-white dark:text-black "
-              : " "
-          } lg:px-2 lg:py-1 p-2 active:bg-neutral-800 dark:active:bg-white can-hover:hover:bg-neutral-800 can-hover:hover:text-white dark:border-white can-hover:dark:hover:bg-white can-hover:dark:hover:text-black`}
-        >
-          Alphabetical
-        </button>
-        <button
-          type="button"
-          onClick={() => handleSortChange("dateAdded")}
-          className={`${
-            sortOption === "dateAdded"
-              ? "bg-neutral-800 dark:bg-white text-white dark:text-black "
-              : " "
-          } lg:px-2 lg:py-1 p-2 active:bg-neutral-800 dark:active:bg-white can-hover:hover:bg-neutral-800 can-hover:hover:text-white dark:border-white can-hover:dark:hover:bg-white can-hover:dark:hover:text-black`}
-        >
-          Date Added
-        </button>
-        <button
-          type="button"
-          onClick={() => handleSortChange("dateHighlighted")}
-          className={`${
-            sortOption === "dateHighlighted"
-              ? "bg-neutral-800 dark:bg-white text-white dark:text-black "
-              : " "
-          } lg:px-2 lg:py-1 p-2 active:bg-neutral-800 dark:active:bg-white can-hover:hover:bg-neutral-800 can-hover:hover:text-white dark:border-white can-hover:dark:hover:bg-white can-hover:dark:hover:text-black`}
-        >
-          Date Highlighted
-        </button>
-      </div>
+        {SORT_FIELDS.map((field) => (
+          <option key={field.value} value={field.value}>
+            {field.label}
+          </option>
+        ))}
+      </select>
+      <Button
+        onClick={() => setSortOrder(isDescending ? "asc" : "desc")}
+        aria-label={`Sort order: ${isDescending ? "descending" : "ascending"}. Switch order`}
+        className="shrink-0 gap-1"
+      >
+        <SortIcon size={20} aria-hidden="true" />
+        {isDescending ? "Desc" : "Asc"}
+      </Button>
     </div>
   );
 }

@@ -8,10 +8,10 @@ function ContentFallback() {
   return (
     <div
       aria-busy="true"
-      className="min-h-[240px] w-full rounded border border-black/10 p-6 dark:border-white/10"
+      className="min-h-[240px] w-full border border-stone-400 p-6 dark:border-stone-500"
     >
-      <div className="h-4 w-1/3 rounded bg-black/10 dark:bg-white/10" />
-      <div className="mt-4 h-3 w-2/3 rounded bg-black/10 dark:bg-white/10" />
+      <div className="h-4 w-1/3 bg-stone-200 dark:bg-neutral-700" />
+      <div className="mt-4 h-3 w-2/3 bg-stone-200 dark:bg-neutral-700" />
     </div>
   );
 }

@@ -2,6 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import Button from "@/components/ui/button";
 import Switch from "@/components/ui/switch";
 import ExcludeSettings from "../components/exclude-settings";
+import Page from "@/components/ui/page";
+import {
+  errorTextClasses,
+  metaTextClasses,
+  sectionTitleClasses,
+} from "@/components/ui/styles";
 
 const MIN_REVIEW_DELAY = 0;
 const MAX_REVIEW_DELAY = 365;
@@ -173,16 +179,15 @@ export default function SettingsPage() {
     "dark:border-neutral-100 dark:bg-neutral-900 dark:text-neutral-100 dark:focus-visible:outline-neutral-100 " +
     "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
-  const helperClasses =
-    "text-sm text-neutral-700 dark:text-neutral-300 lg:pt-2.5";
+  const helperClasses = `${metaTextClasses} lg:pt-2.5`;
+  const legendClasses = `${sectionTitleClasses} mb-2 block w-full`;
 
   return (
-    <div className="mb-6">
-      <div className="flex flex-col gap-6 lg:max-w-[450px]">
-        <h1 className="text-xl mb-2">Settings</h1>
+    <Page title="Settings" width="narrow">
+      <div className="flex flex-col gap-8">
 
         <fieldset className="m-0 min-w-0 border-0 p-0">
-          <legend className="mb-2 block w-full text-lg">
+          <legend className={legendClasses}>
             Exclude books from daily review
           </legend>
           <section>
@@ -191,7 +196,7 @@ export default function SettingsPage() {
         </fieldset>
 
         <fieldset className="m-0 min-w-0 border-0 p-0">
-          <legend className="mb-2 block w-full text-lg">Review delay</legend>
+          <legend className={legendClasses}>Review delay</legend>
           <div className="flex flex-col items-start gap-2 lg:flex-row lg:gap-4">
             <label htmlFor="reviewDelay" className="sr-only">
               Review delay
@@ -256,7 +261,7 @@ export default function SettingsPage() {
         </fieldset>
 
         <fieldset className="m-0 min-w-0 border-0 p-0">
-          <legend className="mb-2 block w-full text-lg">
+          <legend className={legendClasses}>
             Cards per review
           </legend>
           <div className="flex flex-col items-start gap-2 lg:flex-row lg:gap-4">
@@ -323,7 +328,7 @@ export default function SettingsPage() {
         </fieldset>
 
         <fieldset className="m-0 min-w-0 border-0 p-0">
-          <legend className="mb-2 block w-full text-lg">
+          <legend className={legendClasses}>
             Mark today&apos;s review as complete
           </legend>
           <div className="flex flex-col items-start gap-2 lg:flex-row lg:gap-4">
@@ -350,18 +355,18 @@ export default function SettingsPage() {
           {error && (
             <output
               aria-live="polite"
-              className="text-sm text-red-500 dark:text-red-400"
+              className={errorTextClasses}
             >
               {error}
             </output>
           )}
           {!error && saveStatus === "visible" && (
-            <span className="text-sm text-neutral-600 dark:text-neutral-400">
+            <span className={metaTextClasses}>
               Saved
             </span>
           )}
         </div>
       </div>
-    </div>
+    </Page>
   );
 }

@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/ui/button";
+import {
+  errorTextClasses,
+  fieldClasses,
+  labelClasses,
+  metaTextClasses,
+  sectionTitleClasses,
+} from "@/components/ui/styles";
 import type { NewHighlight } from "@/lib/db/types";
 import { importHighlights } from "../api";
 import { parseKoreaderFile } from "../sources";
@@ -68,76 +75,78 @@ export default function UploadKoreader() {
 
   if (isConfirming) {
     return (
-      <form className="grid gap-2 p-2 mb-2">
-        <h1 className="text-xl">Confirm KOReader import</h1>
-        <p className="mb-1">Detected {uploadedHighlights?.length ?? 0} highlights. Check the details before saving.</p>
-        <label htmlFor="koreader-book-title">Book title:</label>
-        <input
-          id="koreader-book-title"
-          value={bookTitle}
-          onChange={(event) => setBookTitle(event.target.value)}
-          className="py-2 px-2 w-full border text-lg border-black dark:border-white dark:bg-neutral-900"
-        />
-        <label htmlFor="koreader-book-author">Book author:</label>
-        <input
-          id="koreader-book-author"
-          value={bookAuthor}
-          onChange={(event) => setBookAuthor(event.target.value)}
-          className="py-2 px-2 w-full border text-lg border-black dark:border-white dark:bg-neutral-900"
-        />
-        {errorMessage && <p className="text-red-500 text mb-2">{errorMessage}</p>}
-        <Button type="submit" onClick={handleConfirm} disabled={isBusy} className="p-2 w-full" text={isBusy ? "Saving…" : "Confirm"} />
+      <form className="grid gap-4">
+        <div>
+          <h2 className={sectionTitleClasses}>Confirm KOReader import</h2>
+          <p className={metaTextClasses}>Detected {uploadedHighlights?.length ?? 0} highlights. Check the details before saving.</p>
+        </div>
+        <div>
+          <label htmlFor="koreader-book-title" className={labelClasses}>Book title</label>
+          <input
+            id="koreader-book-title"
+            value={bookTitle}
+            onChange={(event) => setBookTitle(event.target.value)}
+            className={fieldClasses}
+          />
+        </div>
+        <div>
+          <label htmlFor="koreader-book-author" className={labelClasses}>Book author</label>
+          <input
+            id="koreader-book-author"
+            value={bookAuthor}
+            onChange={(event) => setBookAuthor(event.target.value)}
+            className={fieldClasses}
+          />
+        </div>
+        {errorMessage && <p className={errorTextClasses} role="alert">{errorMessage}</p>}
+        <Button type="submit" onClick={handleConfirm} disabled={isBusy} className="w-full" text={isBusy ? "Saving…" : "Save highlights"} />
       </form>
     );
   }
 
   if (isCompleted) {
     return (
-      <form className="grid gap-2 p-2 mb-2">
-        {message && <p className="text-lg font-medium">{message}</p>}
-        <p>You can continue importing or view your highlights.</p>
-        <div className="flex gap-2">
+      <div className="grid gap-4">
+        <div>
+          {message && <output className={`${sectionTitleClasses} block`}>{message}</output>}
+          <p className={metaTextClasses}>You can continue importing or view your highlights.</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
           <Button
-            text="Continue"
-            type="button"
+            text="Import another"
             onClick={() => {
               setIsCompleted(false);
               setFile(null);
             }}
-            className="p-2 w-full"
           />
-          <Button
-            text="View highlights"
-            type="button"
-            onClick={() => navigate("/all")}
-            className="p-2 w-full"
-          />
+          <Button text="View highlights" onClick={() => navigate("/all")} />
         </div>
-      </form>
+      </div>
     );
   }
 
   return (
-    <form className="grid gap-2">
-      <h1 className="text-xl">Import KOReader highlights file</h1>
-      <p className="mb-1">Select the JSON file exported by KOReader.</p>
-      <label htmlFor="koreader-file">KOReader JSON file:</label>
-      <input
-        id="koreader-file"
-        className="w-full"
-        onChange={handleChange}
-        type="file"
-        accept=".json,application/json"
-      />
-
-      {errorMessage && <p className="text-red-500 text mb-2">{errorMessage}</p>}
-
+    <form className="grid gap-4">
+      <div>
+        <h2 className={sectionTitleClasses}>KOReader highlights</h2>
+        <p className={metaTextClasses}>The JSON file KOReader exports for a book.</p>
+      </div>
+      <div>
+        <label htmlFor="koreader-file" className={labelClasses}>Highlights file (.json)</label>
+        <input
+          id="koreader-file"
+          className="w-full"
+          onChange={handleChange}
+          type="file"
+          accept=".json,application/json"
+        />
+      </div>
+      {errorMessage && <p className={errorTextClasses} role="alert">{errorMessage}</p>}
       <Button
-        text={isBusy ? "Parsing…" : "Upload"}
-        type="button"
+        text={isBusy ? "Reading file…" : "Upload"}
         onClick={handleUpload}
         disabled={isBusy}
-        className="p-2 w-full"
+        className="w-full"
       />
     </form>
   );

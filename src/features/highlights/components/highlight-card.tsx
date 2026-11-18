@@ -5,7 +5,13 @@ import HighlightCardOptions, {
 } from "./highlight-card-options";
 import { useHighlightCardEditStore } from "../highlight-card-store";
 import { type Book } from "@/lib/db/types";
-import { filledInverseClasses } from "@/components/ui/button";
+import Button from "@/components/ui/button";
+import {
+  activeCardClasses,
+  cardClasses,
+  fieldClasses,
+  metaTextClasses,
+} from "@/components/ui/styles";
 
 interface HighlightCardProps {
   id: number;
@@ -53,13 +59,15 @@ export default function HighlightCard({
   }
 
   return (
-    <div className="dark:border-stone-500 flex gap-[12px] border-solid border border-stone-400 p-4 hover-trigger lg:px-5 lg:py-4">
+    <article className={`${isEditing ? activeCardClasses : cardClasses} p-4 lg:px-5`}>
       <div className="w-full">
-        <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2 text-neutral-400 mb-2 relative">
-          <p className="min-w-0 flex-1 break-words text-neutral-600 dark:text-neutral-300">
-            {book?.bookTitle} - {book?.bookAuthor}
+        <div className="-mr-3 -mt-3 mb-1 flex items-start justify-between gap-3">
+          <p className={`min-w-0 flex-1 break-words pt-3 ${metaTextClasses}`}>
+            <cite className="not-italic">
+              {book ? `${book.bookTitle} · ${book.bookAuthor}` : "Book details unavailable"}
+            </cite>
           </p>
-          <div className="flex items-center gap-1 absolute right-0 top-0">
+          <div className="flex items-center">
             <HighlightCardOptions
               highlightId={id}
               bookId={bookId}
@@ -70,34 +78,23 @@ export default function HighlightCard({
         </div>
         {isEditing ? (
           <textarea
-            className="dark:bg-neutral-900 resize-none min-h-[12rem] mb-2 w-full border border-black p-2"
+            aria-label="Highlight text"
+            className={`${fieldClasses} mb-4 min-h-[12rem] resize-none font-literata`}
             value={editValue}
             onChange={handleEditChange}
           />
         ) : (
-          <p className="font-literata max-w-prose leading-[clamp(1.4em,_1.5em+0.5vw,_1.65em)]">
+          <blockquote className="max-w-prose text-pretty font-literata leading-[clamp(1.4em,_1.5em+0.5vw,_1.65em)]">
             {text}
-          </p>
+          </blockquote>
         )}
         {isEditing && (
-          <div className="flex w-full justify-end gap-4">
-            <button
-              type="button"
-              onClick={handleEditCancel}
-              className="p-2 px-4 "
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleEditConfirm}
-              className={`p-2 px-4 ${filledInverseClasses}`}
-            >
-              Confirm
-            </button>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:justify-end">
+            <Button variant="ghost" onClick={handleEditCancel} text="Cancel" />
+            <Button onClick={handleEditConfirm} text="Save" />
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 }

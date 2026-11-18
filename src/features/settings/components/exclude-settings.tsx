@@ -1,6 +1,7 @@
 import { useSettingsBooks } from "../hooks";
 import { useEffect, useRef, useState } from "react";
 import Button from "@/components/ui/button";
+import { fieldClasses, metaTextClasses } from "@/components/ui/styles";
 
 export default function ExcludeSettings() {
   const books = useSettingsBooks();
@@ -67,12 +68,12 @@ export default function ExcludeSettings() {
     return (
       <button
         type="button"
-        className="flex text-sm gap-2 px-2 py-1 bg-neutral-200 dark:bg-neutral-900 can-hover:hover:bg-neutral-300 can-hover:dark:hover:bg-neutral-700 dark:text-white"
+        className="flex min-h-11 items-center gap-2 border border-neutral-900 px-3 text-sm can-hover:hover:bg-neutral-100 active:bg-neutral-900 active:text-white dark:border-neutral-100 can-hover:dark:hover:bg-neutral-700 dark:active:bg-neutral-100 dark:active:text-neutral-900"
         onClick={handleIncludeBook}
         aria-label={`Remove ${bookTitle} from excluded books`}
       >
-        <p>{bookTitle}</p>
-        <span className="text-red-500">✕</span>
+        <span>{bookTitle}</span>
+        <span aria-hidden="true">✕</span>
       </button>
     );
   }
@@ -99,12 +100,12 @@ export default function ExcludeSettings() {
               )
           )}
           {books === undefined ? (
-            <p className="text-gray-500 text-sm" aria-live="polite">
+            <p className={metaTextClasses} aria-live="polite">
               Loading books…
             </p>
           ) : (
             excludedBooksWithTitles.length === 0 && (
-              <p className="text-gray-500 text-sm">
+              <p className={metaTextClasses}>
                 No books are currently excluded
               </p>
             )
@@ -113,7 +114,8 @@ export default function ExcludeSettings() {
 
         <div className="lg:flex-row flex flex-col gap-2 w-full">
           <select
-            className="w-full flex-shrink min-w-0 max-w-full p-2 dark:bg-black text-ellipsis"
+            aria-label="Book to exclude"
+            className={`${fieldClasses} text-ellipsis`}
             defaultValue=""
             ref={dropdownRef}
           >
@@ -133,7 +135,7 @@ export default function ExcludeSettings() {
           <Button
             type="submit"
             text="Exclude"
-            className="p-2 w-full lg:w-auto lg:whitespace-nowrap"
+            className="w-full lg:w-auto lg:whitespace-nowrap"
             disabled={!books || books.length === 0}
           />
         </div>
