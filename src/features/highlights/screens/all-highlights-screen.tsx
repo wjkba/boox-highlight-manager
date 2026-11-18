@@ -50,10 +50,10 @@ export default function AllHighlightsPage({ UploadBooxComponent }: { UploadBooxC
   if (displayedHighlights) {
     return (
       <Page title="Highlights">
-            <div className="mb-2">
-              <SearchBar setSearchValue={setSearchValue} />
-            </div>
-            <div className="mb-4">
+            <div className="mb-4 flex gap-2">
+              <div className="min-w-0 flex-1">
+                <SearchBar setSearchValue={setSearchValue} />
+              </div>
               <SortOptions
                 sortOption={sortOption}
                 setSortOption={setSortOption}

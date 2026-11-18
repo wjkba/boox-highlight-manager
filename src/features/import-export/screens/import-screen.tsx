@@ -1,7 +1,8 @@
 import { useState } from "react";
 
 import Page from "@/components/ui/page";
-import { fieldClasses, labelClasses, sectionDividerClasses } from "@/components/ui/styles";
+import Select from "@/components/ui/select";
+import { labelClasses, sectionDividerClasses } from "@/components/ui/styles";
 import ImportDatabase from "../components/import-database";
 import UploadBoox from "../components/upload-boox";
 import UploadKoreader from "../components/upload-koreader";
@@ -23,16 +24,17 @@ export default function ImportPage() {
             <label htmlFor="import-source" className={labelClasses}>
               Import from
             </label>
-            <select
-              className={fieldClasses}
+            <Select
               name="import-source"
               id="import-source"
               value={source}
-              onChange={(event) => setSource(event.target.value as ImportSource)}
+              onChange={(event) =>
+                setSource(event.target.value as ImportSource)
+              }
             >
               <option value="boox">Onyx Boox annotations (TXT)</option>
               <option value="koreader">KOReader highlights (JSON)</option>
-            </select>
+            </Select>
           </div>
           {source === "boox" ? <UploadBoox /> : <UploadKoreader />}
         </section>
