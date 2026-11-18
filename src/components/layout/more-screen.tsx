@@ -1,68 +1,81 @@
+import type { ReactNode } from "react";
 import { BiAdjust, BiChevronRight } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import Switch from "@/components/ui/switch";
 import Page from "@/components/ui/page";
+import {
+  cardClasses,
+  metaTextClasses,
+  pressableCardClasses,
+  sectionTitleClasses,
+} from "@/components/ui/styles";
 import { SECONDARY_NAV } from "./nav-items";
 import { useTheme } from "./use-theme";
 
-const rowClasses =
-  "flex min-h-16 w-full items-center gap-4 border-b border-neutral-300 px-2 py-2 text-left dark:border-neutral-600";
-const pressableClasses =
-  "can-hover:hover:bg-neutral-100 active:bg-neutral-900 active:text-white can-hover:dark:hover:bg-neutral-700 dark:active:bg-neutral-100 dark:active:text-neutral-900";
-const groupHeadingClasses =
-  "border-b-2 border-neutral-900 pb-1 text-sm font-semibold dark:border-neutral-100";
+const rowClasses = "flex min-h-16 w-full items-center gap-4 p-4 text-left";
+
+/** Rows share one bordered card, like the Books and Lists screens. */
+function Group({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section aria-label={title}>
+      <h2 className={`${sectionTitleClasses} mb-3`}>{title}</h2>
+      <ul className={`${cardClasses} divide-y divide-stone-400 dark:divide-stone-500`}>
+        {children}
+      </ul>
+    </section>
+  );
+}
+
+function RowText({ label, description, labelId }: { label: string; description?: string; labelId?: string }) {
+  return (
+    <span className="min-w-0 flex-1">
+      <span id={labelId} className="block text-lg">
+        {label}
+      </span>
+      {description && <span className={`block ${metaTextClasses}`}>{description}</span>}
+    </span>
+  );
+}
 
 export default function MoreScreen() {
   const { isDark, toggleTheme } = useTheme();
 
   return (
     <Page title="More" width="narrow">
-      {SECONDARY_NAV.map((group) => (
-        <section key={group.title} aria-label={group.title} className="mb-8">
-          <h2 className={groupHeadingClasses}>{group.title}</h2>
-          <ul>
+      <div className="grid gap-8">
+        {SECONDARY_NAV.map((group) => (
+          <Group key={group.title} title={group.title}>
             {group.items.map((item) => {
               const Icon = item.icon;
               return (
                 <li key={item.to}>
-                  <Link to={item.to} className={`${rowClasses} ${pressableClasses}`}>
+                  <Link to={item.to} className={`${rowClasses} ${pressableCardClasses}`}>
                     <Icon size={24} aria-hidden="true" className="shrink-0" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-medium">{item.label}</span>
-                      {item.description && (
-                        <span className="block text-sm text-neutral-600 dark:text-neutral-300">
-                          {item.description}
-                        </span>
-                      )}
-                    </span>
+                    <RowText label={item.label} description={item.description} />
                     <BiChevronRight size={24} aria-hidden="true" className="shrink-0" />
                   </Link>
                 </li>
               );
             })}
-          </ul>
-        </section>
-      ))}
-      <section aria-label="Appearance" className="mb-8">
-        <h2 className={groupHeadingClasses}>Appearance</h2>
-        <div className={rowClasses}>
-          <BiAdjust size={24} aria-hidden="true" className="shrink-0" />
-          <span className="min-w-0 flex-1">
-            <span id="dark-mode-label" className="block font-medium">
-              Dark mode
-            </span>
-            <span className="block text-sm text-neutral-600 dark:text-neutral-300">
-              Light mode refreshes more cleanly on e-ink screens
-            </span>
-          </span>
-          <Switch
-            checked={isDark}
-            onCheckedChange={toggleTheme}
-            aria-labelledby="dark-mode-label"
-            className="shrink-0"
-          />
-        </div>
-      </section>
+          </Group>
+        ))}
+        <Group title="Appearance">
+          <li className={rowClasses}>
+            <BiAdjust size={24} aria-hidden="true" className="shrink-0" />
+            <RowText
+              label="Dark mode"
+              description="Light mode refreshes more cleanly on e-ink screens"
+              labelId="dark-mode-label"
+            />
+            <Switch
+              checked={isDark}
+              onCheckedChange={toggleTheme}
+              aria-labelledby="dark-mode-label"
+              className="shrink-0"
+            />
+          </li>
+        </Group>
+      </div>
     </Page>
   );
 }
