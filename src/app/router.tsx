@@ -17,6 +17,7 @@ const HelpPage = lazy(() => import("@/routes/info/help"));
 const ListsPage = lazy(() => import("@/routes/lists"));
 const ListPage = lazy(() => import("@/routes/lists/detail"));
 const HighlightPage = lazy(() => import("@/routes/highlights/detail"));
+const MorePage = lazy(() => import("@/routes/more"));
 
 export const router: ReturnType<typeof createBrowserRouter> = createBrowserRouter([
   { path: "/", element: <Navigate to="/home" /> },
@@ -38,6 +39,7 @@ export const router: ReturnType<typeof createBrowserRouter> = createBrowserRoute
       { path: "/settings", element: <SettingsPage /> },
       { path: "/about", element: <AboutPage /> },
       { path: "/help", element: <HelpPage /> },
+      { path: "/more", element: <MorePage /> },
     ],
   },
 ]);

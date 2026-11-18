@@ -165,7 +165,7 @@ export default function DailyReviewPage({
     return (
       <div className="grid place-items-center" aria-busy="true">
         <div className=" w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar />
+          <Navbar variant="focus" />
           <main className="min-h-screen lg:flex lg:gap-[32px] lg:pt-6">
             <div className="lg:w-full">
               <h1 className="text-2xl font-medium mb-6 lg:mb-5">Daily review</h1>
@@ -190,7 +190,7 @@ export default function DailyReviewPage({
     return (
       <div className="grid place-items-center">
         <div className="w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar />
+          <Navbar variant="focus" />
           <main className="min-h-screen lg:flex lg:gap-[32px] lg:pt-6">
             <div className="lg:w-full">
               <h1 className="text-2xl font-medium mb-4 lg:mb-3">Daily review</h1>
@@ -234,7 +234,7 @@ export default function DailyReviewPage({
     return (
       <div className="grid place-items-center">
         <div className="w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar />
+          <Navbar variant="focus" />
           <main className="min-h-screen lg:flex lg:gap-[32px] lg:pt-6">
             <div className="lg:w-full">
               <h1 className="text-2xl font-medium mb-4 lg:mb-3">Daily review</h1>
@@ -270,7 +270,7 @@ export default function DailyReviewPage({
     return (
       <div className="grid place-items-center ">
         <div className=" w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar />
+          <Navbar variant="focus" />
           <main className="min-h-screen lg:flex lg:gap-[32px] lg:pt-6">
             <div className="lg:w-full">
               <h1 className="text-xl mb-2">Daily review</h1>
@@ -309,7 +309,7 @@ export default function DailyReviewPage({
     return (
       <div className="grid place-items-center pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-0">
         <div className=" w-full max-w-[600px] lg:max-w-[1200px] px-4">
-          <Navbar />
+          <Navbar variant="focus" />
           <main className="min-h-dvh scroll-pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:flex lg:gap-[32px] lg:pt-8 sm:scroll-pb-0">
             <div className="lg:w-full">
               <div className="mb-16 max-w-[600px] lg:mb-12 lg:max-w-[760px]">
