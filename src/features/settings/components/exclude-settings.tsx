@@ -1,7 +1,8 @@
 import { useSettingsBooks } from "../hooks";
 import { useEffect, useRef, useState } from "react";
 import Button from "@/components/ui/button";
-import { fieldClasses, metaTextClasses } from "@/components/ui/styles";
+import Select from "@/components/ui/select";
+import { metaTextClasses } from "@/components/ui/styles";
 
 export default function ExcludeSettings() {
   const books = useSettingsBooks();
@@ -97,7 +98,7 @@ export default function ExcludeSettings() {
                   bookId={book.id}
                   key={book.id}
                 />
-              )
+              ),
           )}
           {books === undefined ? (
             <p className={metaTextClasses} aria-live="polite">
@@ -105,17 +106,14 @@ export default function ExcludeSettings() {
             </p>
           ) : (
             excludedBooksWithTitles.length === 0 && (
-              <p className={metaTextClasses}>
-                No books are currently excluded
-              </p>
+              <p className={metaTextClasses}>No books are currently excluded</p>
             )
           )}
         </div>
 
         <div className="lg:flex-row flex flex-col gap-2 w-full">
-          <select
+          <Select
             aria-label="Book to exclude"
-            className={`${fieldClasses} text-ellipsis`}
             defaultValue=""
             ref={dropdownRef}
           >
@@ -131,7 +129,7 @@ export default function ExcludeSettings() {
                 {book.bookTitle}
               </option>
             ))}
-          </select>
+          </Select>
           <Button
             type="submit"
             text="Exclude"

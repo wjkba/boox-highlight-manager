@@ -1,19 +1,27 @@
-import { BiSortDown, BiSortUp } from "react-icons/bi";
-import Button from "@/components/ui/button";
-import { fieldClasses } from "@/components/ui/styles";
+import { BiSortAlt2 } from "react-icons/bi";
+import Select from "@/components/ui/select";
+
+type SortOrder = "desc" | "asc";
 
 interface SortOptionsProps {
   sortOption: string;
   setSortOption: (option: string) => void;
-  sortOrder: "desc" | "asc";
-  setSortOrder: (option: "desc" | "asc") => void;
+  sortOrder: SortOrder;
+  setSortOrder: (option: SortOrder) => void;
 }
 
-const SORT_FIELDS = [
-  { value: "dateHighlighted", label: "Date highlighted" },
-  { value: "dateAdded", label: "Date added" },
-  { value: "alphabet", label: "Alphabetical" },
+/** Field and direction in one choice, so the toolbar needs a single control. */
+const SORT_CHOICES: { field: string; order: SortOrder; label: string }[] = [
+  { field: "dateHighlighted", order: "desc", label: "Newest first" },
+  { field: "dateHighlighted", order: "asc", label: "Oldest first" },
+  { field: "dateAdded", order: "desc", label: "Recently added" },
+  { field: "dateAdded", order: "asc", label: "First added" },
+  { field: "alphabet", order: "asc", label: "A to Z" },
+  { field: "alphabet", order: "desc", label: "Z to A" },
 ];
+
+/** The select's value encodes both parts, e.g. "dateAdded:desc". */
+const toValue = (field: string, order: SortOrder) => `${field}:${order}`;
 
 export default function SortOptions({
   sortOption,
@@ -21,34 +29,33 @@ export default function SortOptions({
   sortOrder,
   setSortOrder,
 }: SortOptionsProps) {
-  const isDescending = sortOrder === "desc";
-  const SortIcon = isDescending ? BiSortDown : BiSortUp;
+  function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const [field, order] = event.target.value.split(":");
+    setSortOption(field);
+    setSortOrder(order as SortOrder);
+  }
 
   return (
-    <div className="flex items-center gap-2">
-      <label htmlFor="sort-field" className="shrink-0 text-sm font-medium">
+    <div className="shrink-0">
+      <label htmlFor="sort-field" className="sr-only">
         Sort by
       </label>
-      <select
+      <Select
         id="sort-field"
-        value={sortOption}
-        onChange={(event) => setSortOption(event.target.value)}
-        className={`${fieldClasses} flex-1 sm:max-w-[14rem]`}
+        icon={BiSortAlt2}
+        wrapperClassName="w-44 sm:w-52"
+        value={toValue(sortOption, sortOrder)}
+        onChange={handleChange}
       >
-        {SORT_FIELDS.map((field) => (
-          <option key={field.value} value={field.value}>
-            {field.label}
+        {SORT_CHOICES.map((choice) => (
+          <option
+            key={toValue(choice.field, choice.order)}
+            value={toValue(choice.field, choice.order)}
+          >
+            {choice.label}
           </option>
         ))}
-      </select>
-      <Button
-        onClick={() => setSortOrder(isDescending ? "asc" : "desc")}
-        aria-label={`Sort order: ${isDescending ? "descending" : "ascending"}. Switch order`}
-        className="shrink-0 gap-1"
-      >
-        <SortIcon size={20} aria-hidden="true" />
-        {isDescending ? "Desc" : "Asc"}
-      </Button>
+      </Select>
     </div>
   );
 }
