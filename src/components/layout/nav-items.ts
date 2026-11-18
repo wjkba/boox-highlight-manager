@@ -5,7 +5,7 @@ import {
   BiDotsHorizontalRounded,
   BiExport,
   BiHelpCircle,
-  BiHome,
+  BiSolidHome,
   BiImport,
   BiPlus,
   BiSolidBook,
@@ -30,7 +30,7 @@ export type NavGroup = {
 
 /** Destinations people browse every day. Bottom tabs on mobile, top of the sidebar on desktop. */
 export const PRIMARY_NAV: NavItem[] = [
-  { to: "/home", label: "Home", icon: BiHome },
+  { to: "/home", label: "Home", icon: BiSolidHome },
   {
     to: "/all",
     label: "Highlights",
